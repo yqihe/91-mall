@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"github.com/yqihe/91-mall/gomall/app/user/biz/model/query"
 	"github.com/yqihe/91-mall/gomall/app/user/conf"
 
 	"gorm.io/driver/mysql"
@@ -8,8 +9,9 @@ import (
 )
 
 var (
-	DB  *gorm.DB
-	err error
+	DB    *gorm.DB
+	Query *query.Query
+	err   error
 )
 
 func Init() {
@@ -22,4 +24,6 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
+	query.SetDefault(DB)
+	Query = query.Q
 }

@@ -1,11 +1,14 @@
 package main
 
 import (
+	"github.com/yqihe/91-mall/gomall/app/user/biz/dal"
+	"github.com/yqihe/91-mall/gomall/common/serversuite"
+	"github.com/yqihe/91-mall/gomall/common/utils"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"github.com/yqihe/91-mall/gomall/app/user/conf"
@@ -15,6 +18,7 @@ import (
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
@@ -27,15 +31,21 @@ func main() {
 
 func kitexInit() (opts []server.Option) {
 	// address
-	addr, err := net.ResolveTCPAddr("tcp", conf.GetConf().Kitex.Address)
+	address := conf.GetConf().Kitex.Address
+	if strings.HasPrefix(address, ":") {
+		localIp := utils.MustGetLocalIPv4()
+		address = localIp + address
+	}
+	addr, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
 		panic(err)
 	}
 	opts = append(opts, server.WithServiceAddr(addr))
 
 	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: conf.GetConf().Kitex.Service,
+		RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
 	}))
 
 	// klog
