@@ -3,11 +3,16 @@
 package userservice
 
 import (
+	"context"
 	client "github.com/cloudwego/kitex/client"
+	callopt "github.com/cloudwego/kitex/client/callopt"
+	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error)
+	Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -37,4 +42,14 @@ func MustNewClient(destService string, opts ...client.Option) Client {
 
 type kUserServiceClient struct {
 	*kClient
+}
+
+func (p *kUserServiceClient) GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetItem(ctx, Req)
+}
+
+func (p *kUserServiceClient) Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Register(ctx, Req)
 }

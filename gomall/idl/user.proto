@@ -5,5 +5,42 @@ package user;
 option go_package = "/user";
 
 service UserService{
+  // UmsAdmin
+  // 获取指定用户信息
+  rpc getItem(GetItemReq) returns(GetItemResp) {}
+  rpc register(RegisterReq) returns(RegisterResp) {}
+}
 
+message UmsAdmin {
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string icon = 4;
+  string email = 5;
+  string nickName = 6;
+  string note = 7;
+  string createTime = 8;
+  string loginTime = 9;
+  int32 status = 10;
+}
+
+message GetItemReq {
+  int64 id = 1;
+}
+
+message GetItemResp {
+  UmsAdmin data = 1;
+}
+
+message RegisterReq {
+  string username = 1;
+  string password = 2;
+  string icon = 3;
+  string email = 4;
+  string nickName = 5;
+  string note = 6;
+}
+
+message RegisterResp {
+  UmsAdmin data = 1;
 }

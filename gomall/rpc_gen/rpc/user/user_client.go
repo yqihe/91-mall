@@ -1,6 +1,9 @@
 package user
 
 import (
+	"context"
+	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
+
 	"github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
@@ -9,6 +12,8 @@ import (
 type RPCClient interface {
 	KitexClient() userservice.Client
 	Service() string
+	GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error)
+	Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
 }
 
 func NewRPCClient(dstService string, opts ...client.Option) (RPCClient, error) {
@@ -35,4 +40,12 @@ func (c *clientImpl) Service() string {
 
 func (c *clientImpl) KitexClient() userservice.Client {
 	return c.kitexClient
+}
+
+func (c *clientImpl) GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error) {
+	return c.kitexClient.GetItem(ctx, Req, callOptions...)
+}
+
+func (c *clientImpl) Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
+	return c.kitexClient.Register(ctx, Req, callOptions...)
 }

@@ -3,15 +3,33 @@
 package userservice
 
 import (
+	"context"
 	"errors"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
+	streaming "github.com/cloudwego/kitex/pkg/streaming"
 	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
+	proto "google.golang.org/protobuf/proto"
 )
 
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
-var serviceMethods = map[string]kitex.MethodInfo{}
+var serviceMethods = map[string]kitex.MethodInfo{
+	"getItem": kitex.NewMethodInfo(
+		getItemHandler,
+		newGetItemArgs,
+		newGetItemResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"register": kitex.NewMethodInfo(
+		registerHandler,
+		newRegisterArgs,
+		newRegisterResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+}
 
 var (
 	userServiceServiceInfo                = NewServiceInfo()
@@ -77,6 +95,312 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 	return svcInfo
 }
 
+func getItemHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.GetItemReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).GetItem(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GetItemArgs:
+		success, err := handler.(user.UserService).GetItem(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetItemResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGetItemArgs() interface{} {
+	return &GetItemArgs{}
+}
+
+func newGetItemResult() interface{} {
+	return &GetItemResult{}
+}
+
+type GetItemArgs struct {
+	Req *user.GetItemReq
+}
+
+func (p *GetItemArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.GetItemReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetItemArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetItemArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetItemArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetItemArgs) Unmarshal(in []byte) error {
+	msg := new(user.GetItemReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetItemArgs_Req_DEFAULT *user.GetItemReq
+
+func (p *GetItemArgs) GetReq() *user.GetItemReq {
+	if !p.IsSetReq() {
+		return GetItemArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetItemArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetItemArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetItemResult struct {
+	Success *user.GetItemResp
+}
+
+var GetItemResult_Success_DEFAULT *user.GetItemResp
+
+func (p *GetItemResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.GetItemResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetItemResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetItemResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetItemResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetItemResult) Unmarshal(in []byte) error {
+	msg := new(user.GetItemResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetItemResult) GetSuccess() *user.GetItemResp {
+	if !p.IsSetSuccess() {
+		return GetItemResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetItemResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.GetItemResp)
+}
+
+func (p *GetItemResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetItemResult) GetResult() interface{} {
+	return p.Success
+}
+
+func registerHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.RegisterReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).Register(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *RegisterArgs:
+		success, err := handler.(user.UserService).Register(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RegisterResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newRegisterArgs() interface{} {
+	return &RegisterArgs{}
+}
+
+func newRegisterResult() interface{} {
+	return &RegisterResult{}
+}
+
+type RegisterArgs struct {
+	Req *user.RegisterReq
+}
+
+func (p *RegisterArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.RegisterReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RegisterArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RegisterArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RegisterArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RegisterArgs) Unmarshal(in []byte) error {
+	msg := new(user.RegisterReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RegisterArgs_Req_DEFAULT *user.RegisterReq
+
+func (p *RegisterArgs) GetReq() *user.RegisterReq {
+	if !p.IsSetReq() {
+		return RegisterArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RegisterArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *RegisterArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type RegisterResult struct {
+	Success *user.RegisterResp
+}
+
+var RegisterResult_Success_DEFAULT *user.RegisterResp
+
+func (p *RegisterResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.RegisterResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RegisterResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RegisterResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RegisterResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RegisterResult) Unmarshal(in []byte) error {
+	msg := new(user.RegisterResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RegisterResult) GetSuccess() *user.RegisterResp {
+	if !p.IsSetSuccess() {
+		return RegisterResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RegisterResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.RegisterResp)
+}
+
+func (p *RegisterResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *RegisterResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -85,4 +409,24 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) GetItem(ctx context.Context, Req *user.GetItemReq) (r *user.GetItemResp, err error) {
+	var _args GetItemArgs
+	_args.Req = Req
+	var _result GetItemResult
+	if err = p.c.Call(ctx, "getItem", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Register(ctx context.Context, Req *user.RegisterReq) (r *user.RegisterResp, err error) {
+	var _args RegisterArgs
+	_args.Req = Req
+	var _result RegisterResult
+	if err = p.c.Call(ctx, "register", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }

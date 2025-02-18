@@ -1,5 +1,8 @@
 go 1.23
 use (
+	.
+	./app/frontend
 	./app/user
 	rpc_gen
+	common
 )
