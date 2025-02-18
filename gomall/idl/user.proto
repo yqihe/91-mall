@@ -7,7 +7,8 @@ option go_package = "/user";
 service UserService{
   // UmsAdmin
   // 获取指定用户信息
-  rpc GetItem(GetItemReq) returns(GetItemResp) {}
+  rpc getItem(GetItemReq) returns(GetItemResp) {}
+  rpc register(RegisterReq) returns(RegisterResp) {}
 }
 
 message UmsAdmin {
@@ -28,5 +29,18 @@ message GetItemReq {
 }
 
 message GetItemResp {
+  UmsAdmin data = 1;
+}
+
+message RegisterReq {
+  string username = 1;
+  string password = 2;
+  string icon = 3;
+  string email = 4;
+  string nickName = 5;
+  string note = 6;
+}
+
+message RegisterResp {
   UmsAdmin data = 1;
 }

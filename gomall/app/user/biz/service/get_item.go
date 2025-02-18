@@ -3,17 +3,12 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/dal/mysql"
-	"github.com/yqihe/91-mall/gomall/app/user/biz/model/mymodel"
+	"github.com/yqihe/91-mall/gomall/app/user/pack"
+	"github.com/yqihe/91-mall/gomall/pkg/errno"
 	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
 	"gorm.io/gorm"
-)
-
-var (
-	ErrAdminNotFound   = errors.New("未找到该用户")
-	ErrUserServiceFail = errors.New("服务出错")
 )
 
 type GetItemService struct {
@@ -28,28 +23,19 @@ func NewGetItemService(ctx context.Context) *GetItemService {
 // Run create note info
 func (s *GetItemService) Run(req *user.GetItemReq) (resp *user.GetItemResp, err error) {
 	// Finish your business logic.
+	var adminResp *user.UmsAdmin
 	admin, err := mysql.Query.UmsAdmin.
 		WithContext(s.ctx).
 		Where(mysql.Query.UmsAdmin.ID.Eq(req.Id)).
 		First()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrAdminNotFound
+			return nil, errno.AdminNotExistedError
 		}
-		klog.Errorf("[user-service] GetItem faile, err: %s", err.Error())
-		return nil, ErrUserServiceFail
+		klog.Errorf("[user-service] GetItem 35 failed, err: %s", err.Error())
+		return nil, errno.ServiceInternalError
 	}
-	resp.Data = &user.UmsAdmin{
-		Id:         admin.ID,
-		Username:   admin.Username,
-		Password:   admin.Password,
-		Icon:       admin.Icon,
-		Email:      admin.Email,
-		NickName:   admin.NickName,
-		Note:       admin.Note,
-		CreateTime: fmt.Sprintf("%v", mymodel.MyTime(admin.CreateTime)),
-		LoginTime:  fmt.Sprintf("%v", mymodel.MyTime(admin.LoginTime)),
-		Status:     admin.Status,
-	}
-	return
+	adminResp = pack.UmsAdmin(admin)
+	resp.Data = adminResp
+	return resp, nil
 }

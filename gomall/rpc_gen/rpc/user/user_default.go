@@ -15,3 +15,12 @@ func GetItem(ctx context.Context, req *user.GetItemReq, callOptions ...callopt.O
 	}
 	return resp, nil
 }
+
+func Register(ctx context.Context, req *user.RegisterReq, callOptions ...callopt.Option) (resp *user.RegisterResp, err error) {
+	resp, err = defaultClient.Register(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "Register call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

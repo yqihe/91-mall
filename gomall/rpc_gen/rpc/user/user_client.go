@@ -13,6 +13,7 @@ type RPCClient interface {
 	KitexClient() userservice.Client
 	Service() string
 	GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error)
+	Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
 }
 
 func NewRPCClient(dstService string, opts ...client.Option) (RPCClient, error) {
@@ -43,4 +44,8 @@ func (c *clientImpl) KitexClient() userservice.Client {
 
 func (c *clientImpl) GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error) {
 	return c.kitexClient.GetItem(ctx, Req, callOptions...)
+}
+
+func (c *clientImpl) Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
+	return c.kitexClient.Register(ctx, Req, callOptions...)
 }
