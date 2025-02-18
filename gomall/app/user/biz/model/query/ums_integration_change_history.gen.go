@@ -43,7 +43,7 @@ func newUmsIntegrationChangeHistory(db *gorm.DB, opts ...gen.DOOption) umsIntegr
 
 // umsIntegrationChangeHistory 积分变化历史记录表
 type umsIntegrationChangeHistory struct {
-	umsIntegrationChangeHistoryDo
+	umsIntegrationChangeHistoryDo umsIntegrationChangeHistoryDo
 
 	ALL         field.Asterisk
 	ID          field.Int64
@@ -82,6 +82,20 @@ func (u *umsIntegrationChangeHistory) updateTableName(table string) *umsIntegrat
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsIntegrationChangeHistory) WithContext(ctx context.Context) IUmsIntegrationChangeHistoryDo {
+	return u.umsIntegrationChangeHistoryDo.WithContext(ctx)
+}
+
+func (u umsIntegrationChangeHistory) TableName() string {
+	return u.umsIntegrationChangeHistoryDo.TableName()
+}
+
+func (u umsIntegrationChangeHistory) Alias() string { return u.umsIntegrationChangeHistoryDo.Alias() }
+
+func (u umsIntegrationChangeHistory) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsIntegrationChangeHistoryDo.Columns(cols...)
 }
 
 func (u *umsIntegrationChangeHistory) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

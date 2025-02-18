@@ -40,7 +40,7 @@ func newUmsIntegrationConsumeSetting(db *gorm.DB, opts ...gen.DOOption) umsInteg
 
 // umsIntegrationConsumeSetting 积分消费设置
 type umsIntegrationConsumeSetting struct {
-	umsIntegrationConsumeSettingDo
+	umsIntegrationConsumeSettingDo umsIntegrationConsumeSettingDo
 
 	ALL                field.Asterisk
 	ID                 field.Int64
@@ -73,6 +73,20 @@ func (u *umsIntegrationConsumeSetting) updateTableName(table string) *umsIntegra
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsIntegrationConsumeSetting) WithContext(ctx context.Context) IUmsIntegrationConsumeSettingDo {
+	return u.umsIntegrationConsumeSettingDo.WithContext(ctx)
+}
+
+func (u umsIntegrationConsumeSetting) TableName() string {
+	return u.umsIntegrationConsumeSettingDo.TableName()
+}
+
+func (u umsIntegrationConsumeSetting) Alias() string { return u.umsIntegrationConsumeSettingDo.Alias() }
+
+func (u umsIntegrationConsumeSetting) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsIntegrationConsumeSettingDo.Columns(cols...)
 }
 
 func (u *umsIntegrationConsumeSetting) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

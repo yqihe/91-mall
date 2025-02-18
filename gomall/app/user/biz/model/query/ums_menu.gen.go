@@ -44,7 +44,7 @@ func newUmsMenu(db *gorm.DB, opts ...gen.DOOption) umsMenu {
 
 // umsMenu 后台菜单表
 type umsMenu struct {
-	umsMenuDo
+	umsMenuDo umsMenuDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -86,6 +86,14 @@ func (u *umsMenu) updateTableName(table string) *umsMenu {
 
 	return u
 }
+
+func (u *umsMenu) WithContext(ctx context.Context) IUmsMenuDo { return u.umsMenuDo.WithContext(ctx) }
+
+func (u umsMenu) TableName() string { return u.umsMenuDo.TableName() }
+
+func (u umsMenu) Alias() string { return u.umsMenuDo.Alias() }
+
+func (u umsMenu) Columns(cols ...field.Expr) gen.Columns { return u.umsMenuDo.Columns(cols...) }
 
 func (u *umsMenu) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := u.fieldMap[fieldName]

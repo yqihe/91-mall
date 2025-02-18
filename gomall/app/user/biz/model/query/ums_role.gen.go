@@ -42,7 +42,7 @@ func newUmsRole(db *gorm.DB, opts ...gen.DOOption) umsRole {
 
 // umsRole 后台用户角色表
 type umsRole struct {
-	umsRoleDo
+	umsRoleDo umsRoleDo
 
 	ALL         field.Asterisk
 	ID          field.Int64
@@ -80,6 +80,14 @@ func (u *umsRole) updateTableName(table string) *umsRole {
 
 	return u
 }
+
+func (u *umsRole) WithContext(ctx context.Context) IUmsRoleDo { return u.umsRoleDo.WithContext(ctx) }
+
+func (u umsRole) TableName() string { return u.umsRoleDo.TableName() }
+
+func (u umsRole) Alias() string { return u.umsRoleDo.Alias() }
+
+func (u umsRole) Columns(cols ...field.Expr) gen.Columns { return u.umsRoleDo.Columns(cols...) }
 
 func (u *umsRole) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := u.fieldMap[fieldName]

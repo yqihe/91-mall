@@ -39,7 +39,7 @@ func newUmsResourceCategory(db *gorm.DB, opts ...gen.DOOption) umsResourceCatego
 
 // umsResourceCategory 资源分类表
 type umsResourceCategory struct {
-	umsResourceCategoryDo
+	umsResourceCategoryDo umsResourceCategoryDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -70,6 +70,18 @@ func (u *umsResourceCategory) updateTableName(table string) *umsResourceCategory
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsResourceCategory) WithContext(ctx context.Context) IUmsResourceCategoryDo {
+	return u.umsResourceCategoryDo.WithContext(ctx)
+}
+
+func (u umsResourceCategory) TableName() string { return u.umsResourceCategoryDo.TableName() }
+
+func (u umsResourceCategory) Alias() string { return u.umsResourceCategoryDo.Alias() }
+
+func (u umsResourceCategory) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsResourceCategoryDo.Columns(cols...)
 }
 
 func (u *umsResourceCategory) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

@@ -39,7 +39,7 @@ func newUmsMemberTag(db *gorm.DB, opts ...gen.DOOption) umsMemberTag {
 
 // umsMemberTag 用户标签表
 type umsMemberTag struct {
-	umsMemberTagDo
+	umsMemberTagDo umsMemberTagDo
 
 	ALL               field.Asterisk
 	ID                field.Int64
@@ -70,6 +70,18 @@ func (u *umsMemberTag) updateTableName(table string) *umsMemberTag {
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberTag) WithContext(ctx context.Context) IUmsMemberTagDo {
+	return u.umsMemberTagDo.WithContext(ctx)
+}
+
+func (u umsMemberTag) TableName() string { return u.umsMemberTagDo.TableName() }
+
+func (u umsMemberTag) Alias() string { return u.umsMemberTagDo.Alias() }
+
+func (u umsMemberTag) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberTagDo.Columns(cols...)
 }
 
 func (u *umsMemberTag) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

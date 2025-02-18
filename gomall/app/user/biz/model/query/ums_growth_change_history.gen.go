@@ -43,7 +43,7 @@ func newUmsGrowthChangeHistory(db *gorm.DB, opts ...gen.DOOption) umsGrowthChang
 
 // umsGrowthChangeHistory 成长值变化历史记录表
 type umsGrowthChangeHistory struct {
-	umsGrowthChangeHistoryDo
+	umsGrowthChangeHistoryDo umsGrowthChangeHistoryDo
 
 	ALL         field.Asterisk
 	ID          field.Int64
@@ -82,6 +82,18 @@ func (u *umsGrowthChangeHistory) updateTableName(table string) *umsGrowthChangeH
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsGrowthChangeHistory) WithContext(ctx context.Context) IUmsGrowthChangeHistoryDo {
+	return u.umsGrowthChangeHistoryDo.WithContext(ctx)
+}
+
+func (u umsGrowthChangeHistory) TableName() string { return u.umsGrowthChangeHistoryDo.TableName() }
+
+func (u umsGrowthChangeHistory) Alias() string { return u.umsGrowthChangeHistoryDo.Alias() }
+
+func (u umsGrowthChangeHistory) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsGrowthChangeHistoryDo.Columns(cols...)
 }
 
 func (u *umsGrowthChangeHistory) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

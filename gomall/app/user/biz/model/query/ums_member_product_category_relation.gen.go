@@ -38,7 +38,7 @@ func newUmsMemberProductCategoryRelation(db *gorm.DB, opts ...gen.DOOption) umsM
 
 // umsMemberProductCategoryRelation 会员与产品分类关系表（用户喜欢的分类）
 type umsMemberProductCategoryRelation struct {
-	umsMemberProductCategoryRelationDo
+	umsMemberProductCategoryRelationDo umsMemberProductCategoryRelationDo
 
 	ALL               field.Asterisk
 	ID                field.Int64
@@ -67,6 +67,22 @@ func (u *umsMemberProductCategoryRelation) updateTableName(table string) *umsMem
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberProductCategoryRelation) WithContext(ctx context.Context) IUmsMemberProductCategoryRelationDo {
+	return u.umsMemberProductCategoryRelationDo.WithContext(ctx)
+}
+
+func (u umsMemberProductCategoryRelation) TableName() string {
+	return u.umsMemberProductCategoryRelationDo.TableName()
+}
+
+func (u umsMemberProductCategoryRelation) Alias() string {
+	return u.umsMemberProductCategoryRelationDo.Alias()
+}
+
+func (u umsMemberProductCategoryRelation) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberProductCategoryRelationDo.Columns(cols...)
 }
 
 func (u *umsMemberProductCategoryRelation) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

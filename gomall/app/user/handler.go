@@ -28,6 +28,9 @@ func (s *UserServiceImpl) GetItem(ctx context.Context, req *user.GetItemReq) (re
 // Register implements the UserServiceImpl interface.
 func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReq) (resp *user.RegisterResp, err error) {
 	klog.Infof("[user-handler] Register, req: %#v", req)
+	if req.Username == "" || req.Password == "" {
+		return nil, errno.ParamError
+	}
 	resp, err = service.NewRegisterService(ctx).Run(req)
 	if err != nil {
 		klog.Errorf("[user-handler] Register, err: %v", err.Error())

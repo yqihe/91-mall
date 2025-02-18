@@ -40,7 +40,7 @@ func newUmsMemberTask(db *gorm.DB, opts ...gen.DOOption) umsMemberTask {
 
 // umsMemberTask 会员任务表
 type umsMemberTask struct {
-	umsMemberTaskDo
+	umsMemberTaskDo umsMemberTaskDo
 
 	ALL          field.Asterisk
 	ID           field.Int64
@@ -73,6 +73,18 @@ func (u *umsMemberTask) updateTableName(table string) *umsMemberTask {
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberTask) WithContext(ctx context.Context) IUmsMemberTaskDo {
+	return u.umsMemberTaskDo.WithContext(ctx)
+}
+
+func (u umsMemberTask) TableName() string { return u.umsMemberTaskDo.TableName() }
+
+func (u umsMemberTask) Alias() string { return u.umsMemberTaskDo.Alias() }
+
+func (u umsMemberTask) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberTaskDo.Columns(cols...)
 }
 
 func (u *umsMemberTask) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

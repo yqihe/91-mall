@@ -39,7 +39,7 @@ func newUmsAdminPermissionRelation(db *gorm.DB, opts ...gen.DOOption) umsAdminPe
 
 // umsAdminPermissionRelation 后台用户和权限关系表(除角色中定义的权限以外的加减权限)
 type umsAdminPermissionRelation struct {
-	umsAdminPermissionRelationDo
+	umsAdminPermissionRelationDo umsAdminPermissionRelationDo
 
 	ALL          field.Asterisk
 	ID           field.Int64
@@ -70,6 +70,20 @@ func (u *umsAdminPermissionRelation) updateTableName(table string) *umsAdminPerm
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsAdminPermissionRelation) WithContext(ctx context.Context) IUmsAdminPermissionRelationDo {
+	return u.umsAdminPermissionRelationDo.WithContext(ctx)
+}
+
+func (u umsAdminPermissionRelation) TableName() string {
+	return u.umsAdminPermissionRelationDo.TableName()
+}
+
+func (u umsAdminPermissionRelation) Alias() string { return u.umsAdminPermissionRelationDo.Alias() }
+
+func (u umsAdminPermissionRelation) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsAdminPermissionRelationDo.Columns(cols...)
 }
 
 func (u *umsAdminPermissionRelation) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

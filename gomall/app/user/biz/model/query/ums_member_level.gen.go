@@ -48,7 +48,7 @@ func newUmsMemberLevel(db *gorm.DB, opts ...gen.DOOption) umsMemberLevel {
 
 // umsMemberLevel 会员等级表
 type umsMemberLevel struct {
-	umsMemberLevelDo
+	umsMemberLevelDo umsMemberLevelDo
 
 	ALL                   field.Asterisk
 	ID                    field.Int64
@@ -97,6 +97,18 @@ func (u *umsMemberLevel) updateTableName(table string) *umsMemberLevel {
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberLevel) WithContext(ctx context.Context) IUmsMemberLevelDo {
+	return u.umsMemberLevelDo.WithContext(ctx)
+}
+
+func (u umsMemberLevel) TableName() string { return u.umsMemberLevelDo.TableName() }
+
+func (u umsMemberLevel) Alias() string { return u.umsMemberLevelDo.Alias() }
+
+func (u umsMemberLevel) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberLevelDo.Columns(cols...)
 }
 
 func (u *umsMemberLevel) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

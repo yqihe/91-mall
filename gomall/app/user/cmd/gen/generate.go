@@ -10,9 +10,8 @@ import (
 
 func main() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:       "../../biz/model/query",
-		Mode:          gen.WithDefaultQuery | gen.WithQueryInterface,
-		FieldNullable: true,
+		OutPath: "../../biz/model/query",
+		Mode:    gen.WithDefaultQuery | gen.WithQueryInterface,
 	})
 	db, err := gorm.Open(mysql.Open(conf.GetConf().MySQL.DSN),
 		/*

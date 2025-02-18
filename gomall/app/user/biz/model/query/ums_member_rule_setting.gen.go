@@ -42,7 +42,7 @@ func newUmsMemberRuleSetting(db *gorm.DB, opts ...gen.DOOption) umsMemberRuleSet
 
 // umsMemberRuleSetting 会员积分成长规则表
 type umsMemberRuleSetting struct {
-	umsMemberRuleSettingDo
+	umsMemberRuleSettingDo umsMemberRuleSettingDo
 
 	ALL               field.Asterisk
 	ID                field.Int64
@@ -79,6 +79,18 @@ func (u *umsMemberRuleSetting) updateTableName(table string) *umsMemberRuleSetti
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberRuleSetting) WithContext(ctx context.Context) IUmsMemberRuleSettingDo {
+	return u.umsMemberRuleSettingDo.WithContext(ctx)
+}
+
+func (u umsMemberRuleSetting) TableName() string { return u.umsMemberRuleSettingDo.TableName() }
+
+func (u umsMemberRuleSetting) Alias() string { return u.umsMemberRuleSettingDo.Alias() }
+
+func (u umsMemberRuleSetting) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberRuleSettingDo.Columns(cols...)
 }
 
 func (u *umsMemberRuleSetting) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

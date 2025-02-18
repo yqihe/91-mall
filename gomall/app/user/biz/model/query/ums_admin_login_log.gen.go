@@ -41,7 +41,7 @@ func newUmsAdminLoginLog(db *gorm.DB, opts ...gen.DOOption) umsAdminLoginLog {
 
 // umsAdminLoginLog 后台用户登录日志表
 type umsAdminLoginLog struct {
-	umsAdminLoginLogDo
+	umsAdminLoginLogDo umsAdminLoginLogDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -76,6 +76,18 @@ func (u *umsAdminLoginLog) updateTableName(table string) *umsAdminLoginLog {
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsAdminLoginLog) WithContext(ctx context.Context) IUmsAdminLoginLogDo {
+	return u.umsAdminLoginLogDo.WithContext(ctx)
+}
+
+func (u umsAdminLoginLog) TableName() string { return u.umsAdminLoginLogDo.TableName() }
+
+func (u umsAdminLoginLog) Alias() string { return u.umsAdminLoginLogDo.Alias() }
+
+func (u umsAdminLoginLog) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsAdminLoginLogDo.Columns(cols...)
 }
 
 func (u *umsAdminLoginLog) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

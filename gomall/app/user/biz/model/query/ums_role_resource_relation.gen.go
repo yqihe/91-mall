@@ -38,7 +38,7 @@ func newUmsRoleResourceRelation(db *gorm.DB, opts ...gen.DOOption) umsRoleResour
 
 // umsRoleResourceRelation 后台角色资源关系表
 type umsRoleResourceRelation struct {
-	umsRoleResourceRelationDo
+	umsRoleResourceRelationDo umsRoleResourceRelationDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -67,6 +67,18 @@ func (u *umsRoleResourceRelation) updateTableName(table string) *umsRoleResource
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsRoleResourceRelation) WithContext(ctx context.Context) IUmsRoleResourceRelationDo {
+	return u.umsRoleResourceRelationDo.WithContext(ctx)
+}
+
+func (u umsRoleResourceRelation) TableName() string { return u.umsRoleResourceRelationDo.TableName() }
+
+func (u umsRoleResourceRelation) Alias() string { return u.umsRoleResourceRelationDo.Alias() }
+
+func (u umsRoleResourceRelation) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsRoleResourceRelationDo.Columns(cols...)
 }
 
 func (u *umsRoleResourceRelation) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

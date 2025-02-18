@@ -45,7 +45,7 @@ func newUmsPermission(db *gorm.DB, opts ...gen.DOOption) umsPermission {
 
 // umsPermission 后台用户权限表
 type umsPermission struct {
-	umsPermissionDo
+	umsPermissionDo umsPermissionDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -88,6 +88,18 @@ func (u *umsPermission) updateTableName(table string) *umsPermission {
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsPermission) WithContext(ctx context.Context) IUmsPermissionDo {
+	return u.umsPermissionDo.WithContext(ctx)
+}
+
+func (u umsPermission) TableName() string { return u.umsPermissionDo.TableName() }
+
+func (u umsPermission) Alias() string { return u.umsPermissionDo.Alias() }
+
+func (u umsPermission) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsPermissionDo.Columns(cols...)
 }
 
 func (u *umsPermission) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

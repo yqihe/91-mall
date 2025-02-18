@@ -38,7 +38,7 @@ func newUmsRoleMenuRelation(db *gorm.DB, opts ...gen.DOOption) umsRoleMenuRelati
 
 // umsRoleMenuRelation 后台角色菜单关系表
 type umsRoleMenuRelation struct {
-	umsRoleMenuRelationDo
+	umsRoleMenuRelationDo umsRoleMenuRelationDo
 
 	ALL    field.Asterisk
 	ID     field.Int64
@@ -67,6 +67,18 @@ func (u *umsRoleMenuRelation) updateTableName(table string) *umsRoleMenuRelation
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsRoleMenuRelation) WithContext(ctx context.Context) IUmsRoleMenuRelationDo {
+	return u.umsRoleMenuRelationDo.WithContext(ctx)
+}
+
+func (u umsRoleMenuRelation) TableName() string { return u.umsRoleMenuRelationDo.TableName() }
+
+func (u umsRoleMenuRelation) Alias() string { return u.umsRoleMenuRelationDo.Alias() }
+
+func (u umsRoleMenuRelation) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsRoleMenuRelationDo.Columns(cols...)
 }
 
 func (u *umsRoleMenuRelation) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

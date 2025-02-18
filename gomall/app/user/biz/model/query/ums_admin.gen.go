@@ -45,7 +45,7 @@ func newUmsAdmin(db *gorm.DB, opts ...gen.DOOption) umsAdmin {
 
 // umsAdmin 后台用户表
 type umsAdmin struct {
-	umsAdminDo
+	umsAdminDo umsAdminDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -89,6 +89,14 @@ func (u *umsAdmin) updateTableName(table string) *umsAdmin {
 
 	return u
 }
+
+func (u *umsAdmin) WithContext(ctx context.Context) IUmsAdminDo { return u.umsAdminDo.WithContext(ctx) }
+
+func (u umsAdmin) TableName() string { return u.umsAdminDo.TableName() }
+
+func (u umsAdmin) Alias() string { return u.umsAdminDo.Alias() }
+
+func (u umsAdmin) Columns(cols ...field.Expr) gen.Columns { return u.umsAdminDo.Columns(cols...) }
 
 func (u *umsAdmin) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := u.fieldMap[fieldName]

@@ -45,7 +45,7 @@ func newUmsMemberReceiveAddress(db *gorm.DB, opts ...gen.DOOption) umsMemberRece
 
 // umsMemberReceiveAddress 会员收货地址表
 type umsMemberReceiveAddress struct {
-	umsMemberReceiveAddressDo
+	umsMemberReceiveAddressDo umsMemberReceiveAddressDo
 
 	ALL           field.Asterisk
 	ID            field.Int64
@@ -88,6 +88,18 @@ func (u *umsMemberReceiveAddress) updateTableName(table string) *umsMemberReceiv
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberReceiveAddress) WithContext(ctx context.Context) IUmsMemberReceiveAddressDo {
+	return u.umsMemberReceiveAddressDo.WithContext(ctx)
+}
+
+func (u umsMemberReceiveAddress) TableName() string { return u.umsMemberReceiveAddressDo.TableName() }
+
+func (u umsMemberReceiveAddress) Alias() string { return u.umsMemberReceiveAddressDo.Alias() }
+
+func (u umsMemberReceiveAddress) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberReceiveAddressDo.Columns(cols...)
 }
 
 func (u *umsMemberReceiveAddress) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

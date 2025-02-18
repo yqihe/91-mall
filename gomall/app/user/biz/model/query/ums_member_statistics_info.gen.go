@@ -51,7 +51,7 @@ func newUmsMemberStatisticsInfo(db *gorm.DB, opts ...gen.DOOption) umsMemberStat
 
 // umsMemberStatisticsInfo 会员统计信息
 type umsMemberStatisticsInfo struct {
-	umsMemberStatisticsInfoDo
+	umsMemberStatisticsInfoDo umsMemberStatisticsInfoDo
 
 	ALL                 field.Asterisk
 	ID                  field.Int64
@@ -106,6 +106,18 @@ func (u *umsMemberStatisticsInfo) updateTableName(table string) *umsMemberStatis
 	u.fillFieldMap()
 
 	return u
+}
+
+func (u *umsMemberStatisticsInfo) WithContext(ctx context.Context) IUmsMemberStatisticsInfoDo {
+	return u.umsMemberStatisticsInfoDo.WithContext(ctx)
+}
+
+func (u umsMemberStatisticsInfo) TableName() string { return u.umsMemberStatisticsInfoDo.TableName() }
+
+func (u umsMemberStatisticsInfo) Alias() string { return u.umsMemberStatisticsInfoDo.Alias() }
+
+func (u umsMemberStatisticsInfo) Columns(cols ...field.Expr) gen.Columns {
+	return u.umsMemberStatisticsInfoDo.Columns(cols...)
 }
 
 func (u *umsMemberStatisticsInfo) GetFieldByName(fieldName string) (field.OrderExpr, bool) {

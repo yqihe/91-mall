@@ -54,7 +54,7 @@ func newUmsMember(db *gorm.DB, opts ...gen.DOOption) umsMember {
 
 // umsMember 会员表
 type umsMember struct {
-	umsMemberDo
+	umsMemberDo umsMemberDo
 
 	ALL                   field.Asterisk
 	ID                    field.Int64
@@ -116,6 +116,16 @@ func (u *umsMember) updateTableName(table string) *umsMember {
 
 	return u
 }
+
+func (u *umsMember) WithContext(ctx context.Context) IUmsMemberDo {
+	return u.umsMemberDo.WithContext(ctx)
+}
+
+func (u umsMember) TableName() string { return u.umsMemberDo.TableName() }
+
+func (u umsMember) Alias() string { return u.umsMemberDo.Alias() }
+
+func (u umsMember) Columns(cols ...field.Expr) gen.Columns { return u.umsMemberDo.Columns(cols...) }
 
 func (u *umsMember) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := u.fieldMap[fieldName]

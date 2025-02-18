@@ -41,7 +41,7 @@ func newUmsResource(db *gorm.DB, opts ...gen.DOOption) umsResource {
 
 // umsResource 后台资源表
 type umsResource struct {
-	umsResourceDo
+	umsResourceDo umsResourceDo
 
 	ALL         field.Asterisk
 	ID          field.Int64
@@ -77,6 +77,16 @@ func (u *umsResource) updateTableName(table string) *umsResource {
 
 	return u
 }
+
+func (u *umsResource) WithContext(ctx context.Context) IUmsResourceDo {
+	return u.umsResourceDo.WithContext(ctx)
+}
+
+func (u umsResource) TableName() string { return u.umsResourceDo.TableName() }
+
+func (u umsResource) Alias() string { return u.umsResourceDo.Alias() }
+
+func (u umsResource) Columns(cols ...field.Expr) gen.Columns { return u.umsResourceDo.Columns(cols...) }
 
 func (u *umsResource) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := u.fieldMap[fieldName]
