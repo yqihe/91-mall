@@ -11,8 +11,19 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error)
 	Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
+	Login(ctx context.Context, Req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error)
+	RefreshToken(ctx context.Context, Req *user.RefreshTokenReq, callOptions ...callopt.Option) (r *user.RefreshTokenResp, err error)
+	GetAdminInfo(ctx context.Context, Req *user.GetAdminInfoReq, callOptions ...callopt.Option) (r *user.GetAdminInfoResp, err error)
+	Logout(ctx context.Context, Req *user.LogoutReq, callOptions ...callopt.Option) (r *user.LogoutResp, err error)
+	List(ctx context.Context, Req *user.ListReq, callOptions ...callopt.Option) (r *user.ListResp, err error)
+	GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error)
+	Update(ctx context.Context, Req *user.UpdateReq, callOptions ...callopt.Option) (r *user.UpdateResp, err error)
+	UpdatePassword(ctx context.Context, Req *user.UpdatePasswordReq, callOptions ...callopt.Option) (r *user.UpdatePasswordResp, err error)
+	Delete(ctx context.Context, Req *user.DeleteReq, callOptions ...callopt.Option) (r *user.DeleteResp, err error)
+	UpdateStatus(ctx context.Context, Req *user.UpdateStatusReq, callOptions ...callopt.Option) (r *user.UpdateStatusResp, err error)
+	UpdateRole(ctx context.Context, Req *user.UpdateRoleReq, callOptions ...callopt.Option) (r *user.UpdateRoleResp, err error)
+	GetRoleList(ctx context.Context, Req *user.GetRoleListReq, callOptions ...callopt.Option) (r *user.GetRoleListResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -44,12 +55,67 @@ type kUserServiceClient struct {
 	*kClient
 }
 
+func (p *kUserServiceClient) Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Register(ctx, Req)
+}
+
+func (p *kUserServiceClient) Login(ctx context.Context, Req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Login(ctx, Req)
+}
+
+func (p *kUserServiceClient) RefreshToken(ctx context.Context, Req *user.RefreshTokenReq, callOptions ...callopt.Option) (r *user.RefreshTokenResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RefreshToken(ctx, Req)
+}
+
+func (p *kUserServiceClient) GetAdminInfo(ctx context.Context, Req *user.GetAdminInfoReq, callOptions ...callopt.Option) (r *user.GetAdminInfoResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetAdminInfo(ctx, Req)
+}
+
+func (p *kUserServiceClient) Logout(ctx context.Context, Req *user.LogoutReq, callOptions ...callopt.Option) (r *user.LogoutResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Logout(ctx, Req)
+}
+
+func (p *kUserServiceClient) List(ctx context.Context, Req *user.ListReq, callOptions ...callopt.Option) (r *user.ListResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.List(ctx, Req)
+}
+
 func (p *kUserServiceClient) GetItem(ctx context.Context, Req *user.GetItemReq, callOptions ...callopt.Option) (r *user.GetItemResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetItem(ctx, Req)
 }
 
-func (p *kUserServiceClient) Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
+func (p *kUserServiceClient) Update(ctx context.Context, Req *user.UpdateReq, callOptions ...callopt.Option) (r *user.UpdateResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.Register(ctx, Req)
+	return p.kClient.Update(ctx, Req)
+}
+
+func (p *kUserServiceClient) UpdatePassword(ctx context.Context, Req *user.UpdatePasswordReq, callOptions ...callopt.Option) (r *user.UpdatePasswordResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UpdatePassword(ctx, Req)
+}
+
+func (p *kUserServiceClient) Delete(ctx context.Context, Req *user.DeleteReq, callOptions ...callopt.Option) (r *user.DeleteResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Delete(ctx, Req)
+}
+
+func (p *kUserServiceClient) UpdateStatus(ctx context.Context, Req *user.UpdateStatusReq, callOptions ...callopt.Option) (r *user.UpdateStatusResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UpdateStatus(ctx, Req)
+}
+
+func (p *kUserServiceClient) UpdateRole(ctx context.Context, Req *user.UpdateRoleReq, callOptions ...callopt.Option) (r *user.UpdateRoleResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UpdateRole(ctx, Req)
+}
+
+func (p *kUserServiceClient) GetRoleList(ctx context.Context, Req *user.GetRoleListReq, callOptions ...callopt.Option) (r *user.GetRoleListResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetRoleList(ctx, Req)
 }

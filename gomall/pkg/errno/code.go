@@ -18,6 +18,9 @@ const (
 	SensitiveWordsErrorCode    = 10006 // 敏感词
 
 	// Admin
-	AdminExistedErrorCode    = 1001
-	AdminNotExistedErrorCode = 1002
+	AdminExistedErrorCode         = 1001
+	AdminNotExistedErrorCode      = 1002
+	UserNameOrPasswordErrorCode   = 1003
+	PasswordNotCorrectErrorCode   = 1004
+	UserNameIsNotEnabledErrorCode = 1005
 )

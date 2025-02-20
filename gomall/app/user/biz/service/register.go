@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/dal/mysql"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/model/model"
+	"github.com/yqihe/91-mall/gomall/app/user/pack"
 	"github.com/yqihe/91-mall/gomall/pkg/errno"
 	"github.com/yqihe/91-mall/gomall/pkg/utils"
 	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
@@ -54,6 +55,7 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 		klog.Errorf("[user-service] Register 50 Copy UmsAdmin failed, err: %s", err.Error())
 		return nil, errno.ServiceInternalError
 	}
+	resp.Resp = pack.BuildBaseResp(nil)
 	resp.Data = adminResp
 	return resp, nil
 }

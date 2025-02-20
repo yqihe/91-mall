@@ -12,6 +12,10 @@ service AuthService {
   rpc register(RegisterReq) returns (RegisterResp) {
     option(api.post) = "/admin/register";
   }
+  // 用户登录
+  rpc login(LoginReq) returns(LoginResp) {
+    option(api.post) = "/admin/login";
+  }
 }
 
 message BaseResponse {
@@ -44,5 +48,15 @@ message RegisterReq {
 message RegisterResp {
   BaseResponse resp = 1;
   UmsAdmin data = 2;
+}
+
+message LoginReq {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResp{
+  BaseResponse resp = 1;
+
 }
 

@@ -10,6 +10,9 @@ var (
 	AuthorizationFailedError = NewErrNo(AuthorizationFailedErrCode, "authorization failed")
 
 	// Admin
-	AdminExistedError    = NewErrNo(AdminExistedErrorCode, "用户已存在")
-	AdminNotExistedError = NewErrNo(AdminNotExistedErrorCode, "未找到该用户")
+	AdminExistedError         = NewErrNo(AdminExistedErrorCode, "用户已存在")
+	AdminNotExistedError      = NewErrNo(AdminNotExistedErrorCode, "未找到该用户")
+	UserNameOrPasswordError   = NewErrNo(UserNameOrPasswordErrorCode, "用户名或密码错误")
+	PasswordNotCorrectError   = NewErrNo(PasswordNotCorrectErrorCode, "密码不正确")
+	UserNameIsNotEnabledError = NewErrNo(UserNameIsNotEnabledErrorCode, "账号已被禁用")
 )

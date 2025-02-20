@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/dal/mysql"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/model/mymodel"
+	"github.com/yqihe/91-mall/gomall/app/user/pack"
 	"github.com/yqihe/91-mall/gomall/pkg/errno"
 	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
 	"gorm.io/gorm"
@@ -49,6 +50,7 @@ func (s *GetItemService) Run(req *user.GetItemReq) (resp *user.GetItemResp, err 
 	adminResp.CreateTime = fmt.Sprintf("%s", mymodel.MyTime(admin.CreateTime))
 	adminResp.LoginTime = fmt.Sprintf("%s", mymodel.MyTime(admin.LoginTime))
 
+	resp.Resp = pack.BuildBaseResp(nil)
 	resp.Data = adminResp
 	return resp, nil
 }

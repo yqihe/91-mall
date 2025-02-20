@@ -6,9 +6,37 @@ option go_package = "/user";
 
 service UserService{
   // UmsAdmin
+  // 用户注册
+  rpc register(RegisterReq) returns(RegisterResp) {}
+  // 登录以后返回 token
+  rpc login(LoginReq) returns(LoginResp) {}
+  // 刷新 token
+  rpc refreshToken(RefreshTokenReq) returns(RefreshTokenResp) {}
+  // 获取当前登录用户信息
+  rpc getAdminInfo(GetAdminInfoReq) returns(GetAdminInfoResp) {}
+  // 登出功能
+  rpc logout(LogoutReq) returns(LogoutResp) {}
+  // 根据用户名或姓名分页获取用户列表
+  rpc list(ListReq) returns(ListResp) {}
   // 获取指定用户信息
   rpc getItem(GetItemReq) returns(GetItemResp) {}
-  rpc register(RegisterReq) returns(RegisterResp) {}
+  // 修改指定用户信息
+  rpc update(UpdateReq) returns(UpdateResp) {}
+  // 修改指定用户密码
+  rpc updatePassword(UpdatePasswordReq) returns(UpdatePasswordResp) {}
+  // 删除指定用户信息
+  rpc delete(DeleteReq) returns(DeleteResp) {}
+  // 修改帐号状态
+  rpc updateStatus(UpdateStatusReq) returns(UpdateStatusResp) {}
+  // 给用户分配角色
+  rpc updateRole(UpdateRoleReq) returns(UpdateRoleResp) {}
+  // 获取指定用户的角色
+  rpc getRoleList(GetRoleListReq) returns(GetRoleListResp) {}
+}
+
+message BaseResponse {
+  int64 code = 1;
+  string message = 2;
 }
 
 message UmsAdmin {
@@ -24,12 +52,59 @@ message UmsAdmin {
   int32 status = 10;
 }
 
+message UmsMenu {
+  int64 id = 1;
+  int64 parentId = 2;
+  string createTime = 3;
+  string title = 4;
+  string level = 5;
+  int32 sort = 6;
+  string name = 7;
+  string icon = 8;
+  int32 hidden = 9;
+}
+
+message UmsRole {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 adminCount = 4;
+  string createTime = 5;
+  int32 status = 6;
+  int32 sort = 7;
+}
+
+message TokenMap {
+  string token = 1;
+  string tokenHead = 2;
+}
+
+message BasePage {
+  int32 pageNum = 1;
+  int32 pageSize = 2;
+  int32 totalPage = 3;
+  int64 total = 4;
+}
+
+message AdminInfoData {
+  string username = 1;
+  string icon = 2;
+  repeated UmsMenu menus = 3;
+  repeated UmsRole roles = 4;
+}
+
+message AdminListPageData {
+  BasePage basePage = 1;
+  repeated UmsAdmin list = 2;
+}
+
 message GetItemReq {
   int64 id = 1;
 }
 
 message GetItemResp {
-  UmsAdmin data = 1;
+  BaseResponse resp = 1;
+  UmsAdmin data = 2;
 }
 
 message RegisterReq {
@@ -42,5 +117,112 @@ message RegisterReq {
 }
 
 message RegisterResp {
-  UmsAdmin data = 1;
+  BaseResponse resp = 1;
+  UmsAdmin data = 2;
+}
+
+message LoginReq {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResp {
+  BaseResponse resp = 1;
+  TokenMap data = 2;
+}
+
+message RefreshTokenReq {
+
+}
+
+message RefreshTokenResp {
+  BaseResponse resp = 1;
+  TokenMap data = 2;
+}
+
+message GetAdminInfoReq {
+  string token = 1;
+}
+
+message GetAdminInfoResp {
+  BaseResponse resp = 1;
+  AdminInfoData data = 2;
+}
+
+message LogoutReq {
+
+}
+
+message LogoutResp {
+  BaseResponse resp = 1;
+}
+
+message ListReq {
+  string keyword = 1;
+  int32 pageSize = 2;
+  int32 pageNum = 3;
+}
+
+message ListResp {
+  BaseResponse resp = 1;
+  AdminListPageData data = 2;
+}
+
+message UpdateReq {
+  int64 id = 1;
+  UmsAdmin admin = 2;
+}
+
+message UpdateResp {
+  BaseResponse resp = 1;
+  int32 data = 2;
+}
+
+message UpdatePasswordReq {
+  string username = 1;
+  string oldPassword = 2;
+  string newPassword = 3;
+}
+
+message UpdatePasswordResp {
+  BaseResponse resp = 1;
+  int32 data = 2;
+}
+
+message DeleteReq {
+  int64 id = 1;
+}
+
+message DeleteResp {
+  BaseResponse resp = 1;
+  int32 data = 2;
+}
+
+message UpdateStatusReq {
+  int64 id = 1;
+  int32 status = 2;
+}
+
+message UpdateStatusResp {
+  BaseResponse resp = 1;
+  int32 data = 2;
+}
+
+message UpdateRoleReq {
+  int64 adminId = 1;
+  repeated int64 roleIds = 2;
+}
+
+message UpdateRoleResp {
+  BaseResponse resp = 1;
+  int32 data = 2;
+}
+
+message GetRoleListReq {
+  int64 adminId = 1;
+}
+
+message GetRoleListResp {
+  BaseResponse resp = 1;
+  repeated UmsRole data = 2;
 }
