@@ -18,6 +18,17 @@ const (
 	SensitiveWordsErrorCode    = 10006 // 敏感词
 
 	// Admin
-	AdminExistedErrorCode    = 1001
-	AdminNotExistedErrorCode = 1002
+	AdminExistedErrorCode         = 1001
+	AdminNotExistedErrorCode      = 1002
+	UserNameOrPasswordErrorCode   = 1003
+	PasswordNotCorrectErrorCode   = 1004
+	UserNameIsNotEnabledErrorCode = 1005
+
+	// metadata
+	NoMetadataInContextErrorCode       = 9001
+	NoAuthorizationInMetadataErrorCode = 9002
+
+	// jwt
+	InvalidAlgorithmErrorCode = 9011
+	InvalidTokenErrorCode     = 9012
 )

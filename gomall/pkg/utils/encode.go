@@ -26,3 +26,8 @@ func SHA256(str string) string {
 	h.Write([]byte(str))
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
+
+func Matches(inputPassword, storedHashedPassword string) bool {
+	hashedInputPassword := MD5(inputPassword)
+	return hashedInputPassword == storedHashedPassword
+}

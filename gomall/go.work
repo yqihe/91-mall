@@ -1,8 +1,9 @@
-go 1.23
+go 1.23.3
+
 use (
 	.
 	./app/frontend
-	./app/user
-	rpc_gen
+	./app/user_admin
 	common
+	rpc_gen
 )
