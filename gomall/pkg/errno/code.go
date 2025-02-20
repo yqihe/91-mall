@@ -23,4 +23,12 @@ const (
 	UserNameOrPasswordErrorCode   = 1003
 	PasswordNotCorrectErrorCode   = 1004
 	UserNameIsNotEnabledErrorCode = 1005
+
+	// metadata
+	NoMetadataInContextErrorCode       = 9001
+	NoAuthorizationInMetadataErrorCode = 9002
+
+	// jwt
+	InvalidAlgorithmErrorCode = 9011
+	InvalidTokenErrorCode     = 9012
 )
