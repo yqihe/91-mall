@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/yqihe/91-mall/gomall/app/user/biz/dal/mysql"
 	redisClient "github.com/yqihe/91-mall/gomall/app/user/biz/dal/redis"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/model/model"
 	"github.com/yqihe/91-mall/gomall/app/user/biz/model/mymodel"
@@ -13,7 +13,7 @@ import (
 	"github.com/yqihe/91-mall/gomall/pkg/errno"
 	"github.com/yqihe/91-mall/gomall/pkg/utils"
 	user "github.com/yqihe/91-mall/gomall/rpc_gen/kitex_gen/user"
-	"net/http"
+	"gorm.io/gorm"
 	"strconv"
 	"time"
 )
@@ -53,7 +53,7 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	// 加载用户详情
 	userDetails, err = s.loadUserByUsername(req.Username)
 	if err != nil {
-		klog.Errorf("[user-service] Login loadUserByUsername failed,  err: %s", err.Error())
+		klog.Errorf("[user-service] Login loadUserByUsername failed, err: %s", err.Error())
 		return nil, err
 	}
 	// 密码需要客户端加密后传递
@@ -67,11 +67,12 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	// 生成 JWT Token
 	token, err := utils.CreateToken(userDetails.UmsAdmin.Username)
 	if err != nil {
-		klog.Errorf("[user-service] CreateToken failed,  err: %s", err.Error())
+		klog.Errorf("[user-service] Login CreateToken failed, err: %s", err.Error())
 		return nil, errno.ServiceInternalError
 	}
 	// 插入登录日志
 	if err = s.insertLoginLog(userDetails.UmsAdmin.Username); err != nil {
+		klog.Errorf("[user-service] Login InsertLoginLog failed, err: %s", err.Error())
 		return nil, err
 	}
 	resp.Resp = pack.BuildBaseResp(nil)
@@ -85,13 +86,13 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 func (s *LoginService) loadUserByUsername(username string) (*mymodel.AdminUserDetails, error) {
 	admin, err := s.getAdminByUsername(username)
 	if err != nil {
-		klog.Errorf("[user-service] Login getAdminByUsername failed,  err: %s", err.Error())
-		return nil, errno.UserNameOrPasswordError
+		klog.Errorf("[user-service] Login getAdminByUsername failed, err: %s", err.Error())
+		return nil, err
 	}
 	resourceList, err := s.getResourceList(admin.ID)
 	if err != nil {
-		klog.Errorf("[user-service] Login getResourceList failed,  err: %s", err.Error())
-		return nil, errno.UserNameOrPasswordError
+		klog.Errorf("[user-service] Login getResourceList failed, err: %s", err.Error())
+		return nil, err
 	}
 	return &mymodel.AdminUserDetails{
 		UmsAdmin:     admin,
@@ -114,15 +115,19 @@ func (s *LoginService) getAdminByUsername(username string) (*model.UmsAdmin, err
 	// 缓存中没有从数据库中获取
 	admin, err := mymodel.GetAdminByUsername(s.ctx, username)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errno.UserNameOrPasswordError
+		}
+		klog.Errorf("[user-service] Login GetAdminByUsername failed, err: %s", err.Error())
+		return nil, errno.ServiceInternalError
 	}
 	// 将数据库中的数据存入缓存中
 	adminBytes, _ = json.Marshal(admin)
-	if err := redisClient.SetCache(s.ctx, key, adminBytes); err != nil {
+	if err = redisClient.SetCache(s.ctx, key, adminBytes); err != nil {
 		klog.Errorf("[user-service] Login Redis Set admin failed, err: %s", err.Error())
 		return nil, errno.ServiceInternalError
 	}
-	return admin, err
+	return admin, nil
 }
 
 func (s *LoginService) getResourceList(adminId int64) ([]*model.UmsResource, error) {
@@ -141,11 +146,15 @@ func (s *LoginService) getResourceList(adminId int64) ([]*model.UmsResource, err
 	var resources []*model.UmsResource
 	resources, err = mymodel.GetResourceListByAdminId(s.ctx, adminId)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		klog.Errorf("[user-service] Login GetResourceListByAdminId failed, err: %s", err.Error())
+		return nil, errno.ServiceInternalError
 	}
 	// 将数据库中的数据存入缓存中
 	resourceBytes, _ = json.Marshal(resources)
-	if err := redisClient.SetCache(s.ctx, key, resourceBytes); err != nil {
+	if err = redisClient.SetCache(s.ctx, key, resourceBytes); err != nil {
 		klog.Errorf("[user-service] Login Redis Set resource list failed, err: %s", err.Error())
 		return nil, errno.ServiceInternalError
 	}
@@ -155,8 +164,8 @@ func (s *LoginService) getResourceList(adminId int64) ([]*model.UmsResource, err
 func (s *LoginService) insertLoginLog(username string) error {
 	admin, err := s.getAdminByUsername(username)
 	if err != nil {
-		klog.Errorf("[user-service] Login getAdminByUsername failed,  err: %s", err.Error())
-		return errno.UserNameOrPasswordError
+		klog.Errorf("[user-service] Login getAdminByUsername failed, err: %s", err.Error())
+		return err
 	}
 	if admin == nil {
 		return errno.UserNameOrPasswordError
@@ -165,26 +174,26 @@ func (s *LoginService) insertLoginLog(username string) error {
 		AdminID:    admin.ID,
 		CreateTime: time.Now(),
 		// todo: rpc  没实现 IP 获取
-		IP: s.getClientIP(),
+		// IP: s.getClientIP(),
 	}
-	if err = mysql.Query.UmsAdminLoginLog.WithContext(s.ctx).Create(loginLog); err != nil {
-		klog.Errorf("[user-service] Login insert log failed,  err: %s", err.Error())
+	if err = mymodel.InsertLoginLog(s.ctx, loginLog); err != nil {
+		klog.Errorf("[user-service] Login InsertLoginLog failed, err: %s", err.Error())
 		return errno.ServiceInternalError
 	}
 	return nil
 }
 
-// 获取客户端 IP 地址
-func (s *LoginService) getClientIP() string {
-	// 获取 HTTP 请求中的 IP 地址
-	if req, ok := s.ctx.Value("httpRequest").(*http.Request); ok {
-		ip := req.RemoteAddr
-		// 判断是否有代理，如果有代理则返回真实 IP
-		forwarded := req.Header.Get("X-Forwarded-For")
-		if len(forwarded) > 0 {
-			ip = forwarded
-		}
-		return ip
-	}
-	return ""
-}
+//// 获取客户端 IP 地址
+//func (s *LoginService) getClientIP() string {
+//	// 获取 HTTP 请求中的 IP 地址
+//	if req, ok := s.ctx.Value("httpRequest").(*http.Request); ok {
+//		ip := req.RemoteAddr
+//		// 判断是否有代理，如果有代理则返回真实 IP
+//		forwarded := req.Header.Get("X-Forwarded-For")
+//		if len(forwarded) > 0 {
+//			ip = forwarded
+//		}
+//		return ip
+//	}
+//	return ""
+//}
